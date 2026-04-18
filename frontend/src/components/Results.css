@@ -1,0 +1,171 @@
+.results-section {
+  background: #1e293b;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.results-section h2 {
+  margin-bottom: 1.5rem;
+  color: #e2e8f0;
+}
+
+.quality-score {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.score-circle {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+  margin-bottom: 0.5rem;
+}
+
+.score-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.score-label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.bugs-section {
+  margin-bottom: 2rem;
+}
+
+.bugs-section h3 {
+  color: #f87171;
+  margin-bottom: 1rem;
+}
+
+.bugs-list {
+  list-style: none;
+}
+
+.bugs-list li {
+  background: #0f172a;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #ef4444;
+  margin-bottom: 0.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.code-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.code-panel {
+  background: #0f172a;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.code-panel h4 {
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+}
+
+.code-display {
+  background: #020617;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.code-display code {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.explanation-section {
+  background: #0f172a;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.explanation-section h3 {
+  color: #60a5fa;
+  margin-bottom: 0.75rem;
+}
+
+.summary-section,
+.steps-section,
+.modified-section,
+.error-section {
+  margin-bottom: 2rem;
+}
+
+.summary-section h3,
+.steps-section h3,
+.modified-section h3,
+.error-section h3 {
+  margin-bottom: 1rem;
+  color: #60a5fa;
+}
+
+.steps-list {
+  list-style: decimal inside;
+}
+
+.steps-list li {
+  padding: 0.75rem 1rem;
+  background: #0f172a;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.modified-list {
+  list-style: none;
+}
+
+.modified-list li {
+  background: #0f172a;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.file-score {
+  display: block;
+  color: #10b981;
+  margin: 0.5rem 0;
+}
+
+.file-bugs {
+  list-style: none;
+  margin-top: 0.75rem;
+}
+
+.file-bugs li {
+  padding: 0.5rem;
+  background: #1e293b;
+  border-left: 3px solid #ef4444;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.error-section {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #991b1b;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .code-comparison {
+    grid-template-columns: 1fr;
+  }
+}
