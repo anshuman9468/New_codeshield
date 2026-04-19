@@ -80,7 +80,7 @@ Edit `~/.openclaw/openclaw.json` and add:
 ```json
 {
   "env": {
-    "GEMINI_API_KEY": "your-gemini-key-here"
+    "GEMINI_API_KEY": "AIzaSyDlK--d6TtwG_1YywocZBVGE1SAPdSKBJ8"
   },
   "plugins": {
     "entries": {
@@ -88,8 +88,8 @@ Edit `~/.openclaw/openclaw.json` and add:
         "enabled": true,
         "config": {
           "enabled": true,
-          "apiKey": "ak_claw_your-key-here",
-          "userId": "your-email@example.com",
+          "apiKey": "ak_live_accd8b2681104d6fb231c4127074357cbe8722f49cac151edc7c6dd59bb10689",
+          "userId": "chain.chapter.dao@gmail.com",
           "agentId": "codeshield-agent-001",
           "contextId": "default",
           "validitySeconds": 600,
@@ -107,50 +107,85 @@ Edit `~/.openclaw/openclaw.json` and add:
 
 ### Step 5: Start ArmorClaw Gateway
 ```bash
-openclaw gateway --port 18789 --verbose
+# Kill any existing instances first
+pkill -f "openclaw" 2>/dev/null; sleep 1
+
+# Start gateway in background
+cd /home/anshumandutta/openclaw-armoriq && node openclaw.mjs gateway --port 18789 --verbose > /tmp/openclaw-gateway.log 2>&1 &
+
+# Wait ~6 seconds, then verify
+sleep 6 && curl http://localhost:18789/healthz
 ```
 
 ## Running the Application
 
-### Option 1: Local Development (Mock Mode - No API Keys Needed)
+> **Note:** A `.env` file is required. It is pre-configured with your API keys at `New_codeshield/.env`.
+> The `armorclaw-venv` Python virtual environment must be activated before running the backend.
 
-#### Step 1: Start Mock OpenClaw Server
+### Production Mode (Real ArmorClaw) — Recommended
+
+Use **4 separate terminal tabs/windows**:
+
+#### Terminal 1 — ArmorClaw Gateway
 ```bash
+pkill -f "openclaw" 2>/dev/null; sleep 1
+cd /home/anshumandutta/openclaw-armoriq && node openclaw.mjs gateway --port 18789 --verbose > /tmp/openclaw-gateway.log 2>&1 &
+sleep 6 && curl http://localhost:18789/healthz
+# Then watch logs:
+tail -f /tmp/openclaw-gateway.log
+```
+
+#### Terminal 2 — Backend Server
+```bash
+cd /home/anshumandutta/New_codeshield
+source armorclaw-venv/bin/activate
+python -m backend.server
+```
+Runs on http://localhost:8000
+
+#### Terminal 3 — Frontend
+```bash
+cd /home/anshumandutta/New_codeshield/frontend
+npm run dev
+```
+Runs on http://localhost:5173  (open this in your browser)
+
+---
+
+### Local Development Mode (Mock — No Gateway Needed)
+
+#### Terminal 1 — Mock OpenClaw Server
+```bash
+cd /home/anshumandutta/New_codeshield
+source armorclaw-venv/bin/activate
 python -m tools.mock_server
 ```
 Runs on port 8001.
 
-#### Step 2: Start Backend Server
-Open new terminal:
+#### Terminal 2 — Backend Server
 ```bash
+cd /home/anshumandutta/New_codeshield
+source armorclaw-venv/bin/activate
 python -m backend.server
 ```
 Runs on port 8000.
 
-#### Step 3: Start Frontend
-Open another terminal:
+#### Terminal 3 — Frontend
 ```bash
-cd frontend
+cd /home/anshumandutta/New_codeshield/frontend
 npm run dev
 ```
-Runs on port 3000.
+Runs on http://localhost:5173
 
 ---
 
-### Option 2: Production with Real ArmorClaw
-
-#### Step 1: Start ArmorClaw Gateway
+### Stop Everything
 ```bash
-openclaw gateway --port 18789 --verbose
+pkill -f "openclaw"
+pkill -f "backend.server"
+pkill -f "mock_server"
+# Frontend: press Ctrl+C in its terminal
 ```
-
-#### Step 2: Update .env to use real ArmorClaw
-```env
-ARMORCLAW_BASE_URL=http://localhost:18789
-```
-
-#### Step 3: Start CodeShield Backend & Frontend
-Same as mock mode!
 
 ---
 

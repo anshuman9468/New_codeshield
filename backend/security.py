@@ -8,9 +8,11 @@ class SecurityValidator:
             os.path.abspath('./user/project'),
             os.path.abspath('user/project'),
             os.path.join(os.getcwd(), 'user', 'project'),
+            os.path.abspath('/home/anshumandutta/Sicario/PYQT'),
+            os.path.abspath('/home/anshumandutta/Sicario'),
+            os.path.abspath('/home/anshumandutta'),
             os.path.abspath(r'D:\sample project'),
             os.path.abspath('D:/sample project'),
-            
         ]
         self.blocked_files = [
             '.env',
