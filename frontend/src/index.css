@@ -1,20 +1,88 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+html,body{margin:0;padding:0;height:100%;overflow:hidden}
+*{box-sizing:border-box}
+:root{--bg:#06080f;--surface:rgba(14,20,40,0.7);--border:rgba(0,170,255,0.12);--neon:#00aaff;--neon2:#00ffcc;--danger:#ff3b5c;--warn:#ffaa00;--low:#00e68a;--text:#e0e8f8;--muted:#6b7fa0}
+.light-mode{--bg:#f0f4fa;--surface:rgba(255,255,255,0.8);--border:rgba(0,100,200,0.15);--text:#0a1628;--muted:#5a6a80}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)}
+
+/* Loading screen */
+#loader{position:fixed;inset:0;z-index:9999;background:#06080f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s,visibility .8s}
+#loader.hidden{opacity:0;visibility:hidden}
+.shield-glow{width:120px;height:120px;position:relative}
+.shield-glow svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(0,170,255,.6)) drop-shadow(0 0 40px rgba(0,170,255,.3))}
+.shield-pulse{animation:shieldPulse 2s ease-in-out infinite}
+@keyframes shieldPulse{0%,100%{filter:drop-shadow(0 0 15px rgba(0,170,255,.5))}50%{filter:drop-shadow(0 0 35px rgba(0,170,255,.9)) drop-shadow(0 0 60px rgba(0,255,204,.3))}}
+.loader-text{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;letter-spacing:6px;color:#00aaff;margin-top:24px;text-shadow:0 0 20px rgba(0,170,255,.5)}
+.loader-sub{color:#6b7fa0;font-size:13px;margin-top:12px;font-family:'JetBrains Mono',monospace}
+.scan-line{width:200px;height:2px;background:linear-gradient(90deg,transparent,#00aaff,transparent);margin-top:20px;animation:scanMove 1.5s ease-in-out infinite}
+@keyframes scanMove{0%{transform:translateX(-60px);opacity:0}50%{opacity:1}100%{transform:translateX(60px);opacity:0}}
+
+/* Circuit particles */
+.circuit-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.circuit-line{position:absolute;background:linear-gradient(180deg,transparent,rgba(0,170,255,.15),transparent);width:1px;animation:circuitFloat linear infinite}
+@keyframes circuitFloat{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
+.circuit-dot{position:absolute;width:3px;height:3px;background:#00aaff;border-radius:50%;opacity:.3;animation:dotBlink 3s ease-in-out infinite}
+@keyframes dotBlink{0%,100%{opacity:.1}50%{opacity:.5}}
+
+/* Glassmorphism */
+.glass{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:12px}
+
+/* Grid bg */
+.grid-bg{background-image:linear-gradient(rgba(0,170,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,170,255,.04) 1px,transparent 1px);background-size:40px 40px}
+
+/* Code editor */
+.code-area{background:rgba(6,8,15,.9);color:#c9d1d9;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;resize:none;outline:none;border:none;width:100%;padding:0}
+.line-numbers{color:#3a4560;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;text-align:right;padding-right:12px;user-select:none;min-width:36px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,170,255,.2);border-radius:3px}
+
+/* Glow button */
+.glow-btn{background:linear-gradient(135deg,#00aaff,#0077cc);box-shadow:0 0 20px rgba(0,170,255,.3),inset 0 1px 0 rgba(255,255,255,.1);transition:all .3s}
+.glow-btn:hover{box-shadow:0 0 30px rgba(0,170,255,.5),0 0 60px rgba(0,170,255,.2);transform:translateY(-1px)}
+.glow-btn:active{transform:translateY(0)}
+.glow-btn:disabled{opacity: 0.7; pointer-events: none;}
+
+/* Severity badges */
+.badge-high{background:rgba(255,59,92,.15);color:#ff3b5c;border:1px solid rgba(255,59,92,.3)}
+.badge-medium{background:rgba(255,170,0,.15);color:#ffaa00;border:1px solid rgba(255,170,0,.3)}
+.badge-low{background:rgba(0,230,138,.15);color:#00e68a;border:1px solid rgba(0,230,138,.3)}
+
+/* Typing dots */
+.typing-dot{display:inline-block;width:6px;height:6px;background:#00aaff;border-radius:50%;margin:0 2px;animation:typingBounce .6s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-6px);opacity:1}}
+
+/* Terminal logs */
+.terminal{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;color:#3a6;overflow-y:auto;max-height:120px}
+.terminal .log-warn{color:#ffaa00}
+.terminal .log-err{color:#ff3b5c}
+.terminal .log-info{color:#00aaff}
+
+/* Fade in for results */
+.fade-up{animation:fadeUp .4s ease-out both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Status pulse */
+.status-dot{width:8px;height:8px;border-radius:50%;background:#00e68a;box-shadow:0 0 8px rgba(0,230,138,.5);animation:statusPulse 2s infinite}
+@keyframes statusPulse{0%,100%{box-shadow:0 0 4px rgba(0,230,138,.4)}50%{box-shadow:0 0 12px rgba(0,230,138,.7)}}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;z-index:100;padding:10px 18px;border-radius:8px;background:rgba(0,170,255,.15);border:1px solid rgba(0,170,255,.3);color:#00aaff;font-size:13px;font-family:'JetBrains Mono',monospace;transform:translateY(60px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+.app-wrapper{height:100%;overflow-y:auto;overflow-x:hidden;position:relative}
+
+/* App Transition */
+.app-visible {
+  opacity: 1 !important;
+  transition: opacity .6s;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #e2e8f0;
-  min-height: 100vh;
-}
-
-code {
-  font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+/* Fix text wrapping */
+pre code {
+  white-space: pre-wrap;
+  word-break: break-all;
 }

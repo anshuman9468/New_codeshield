@@ -7,6 +7,11 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    strictPort: true
+    strictPort: true,
+    proxy: {
+      '/analyze_code': 'http://localhost:8000',
+      '/analyze_project': 'http://localhost:8000',
+      '/logs': 'http://localhost:8000'
+    }
   }
 })
