@@ -9,9 +9,51 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { spawn } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '../.env') });
+
+// ─── OpenClaw Execution ───────────────────────────────────────────────────────
+function runOpenClaw(prompt) {
+  return new Promise((resolve) => {
+    let output = '';
+    let errorOutput = '';
+
+    const cmdArgs = [
+      'openclaw.mjs',
+      'agent',
+      '--agent', 'main',
+      '--model', 'google/gemini-3-flash-preview',
+      '--message', prompt,
+      '--json'
+    ];
+
+    const child = spawn('node', cmdArgs, {
+      cwd: '/home/anshumandutta/openclaw-armoriq',
+      env: {
+        ...process.env,
+        GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AIzaSyDlK--d6TtwG_1YywocZBVGE1SAPdSKBJ8'
+      }
+    });
+
+    child.stdout.on('data', data => output += data.toString());
+    child.stderr.on('data', data => errorOutput += data.toString());
+
+    child.on('close', () => {
+      try {
+        const startIdx = output.lastIndexOf('{');
+        if (startIdx !== -1) {
+          resolve(JSON.parse(output.substring(startIdx)));
+        } else {
+          resolve({ raw_output: output, stderr: errorOutput });
+        }
+      } catch (err) {
+        resolve({ error: err.message, raw_output: output, stderr: errorOutput });
+      }
+    });
+  });
+}
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const API_KEY       = process.env.OPEN_ROUTER_API_KEY || process.env.GEMINI_API_KEY; 
@@ -89,21 +131,26 @@ Code to analyze:
 ${code}
 \`\`\``;
 
+  console.log(`[AI 🚀] Delegating analysis to OpenRouter...`);
   const MODELS = [
     'google/gemini-2.0-flash-001',
     'google/gemini-pro-1.5',
     'openai/gpt-4o-mini'
   ];
 
+  const API_KEY = process.env.OPEN_ROUTER_API_KEY;
+  if (!API_KEY) {
+    throw new Error('OPEN_ROUTER_API_KEY is missing in .env');
+  }
+
   for (const model of MODELS) {
     try {
-      if (!API_KEY) throw new Error('API_KEY is missing in .env');
-
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${API_KEY}`,
           'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://codeshield.app',
           'X-Title': 'CodeShield'
         },
         body: JSON.stringify({
@@ -121,14 +168,15 @@ ${code}
 
       const text = data.choices[0].message.content.trim();
       const parsed = JSON.parse(text);
-      console.log(`[AI ✅] Used model: ${model}`);
+      console.log(`[AI ✅] Analysis complete using model: ${model}`);
       return parsed;
     } catch (err) {
       console.error(`[AI ❌] Error with ${model}:`, err.message);
       continue;
     }
   }
-  throw new Error('All AI models failed. Check your API key and balance.');
+  
+  throw new Error('All AI models failed on OpenRouter. Check your API key and balance.');
 }
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
