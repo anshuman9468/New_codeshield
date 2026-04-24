@@ -258,6 +258,8 @@ Set `validitySeconds` to 600 in ArmorClaw config
 curl http://localhost:18789/healthz
 ```
 
+Made By US!!
+For any query you can mail us!!
 ## License
 
 MIT
